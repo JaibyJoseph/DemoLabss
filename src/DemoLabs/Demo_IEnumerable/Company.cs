@@ -7,7 +7,7 @@ namespace Demo_IEnumerable
     {
         public string CompanyName { get; private set; }
 
-        private System.Collections.ArrayList theEmployees { get; set; }
+        private System.Collections.ArrayList theEmployees;
 
 
         public Company(string name)
@@ -17,7 +17,7 @@ namespace Demo_IEnumerable
         }
 
 
-        public void AddEmployee(Employee newEmployee)
+        public void Add(Employee newEmployee)
         {
             theEmployees.Add(newEmployee);
         }

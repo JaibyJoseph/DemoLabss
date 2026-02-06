@@ -29,9 +29,11 @@
                 Console.WriteLine("{0} {1, -20} {2,15:C}", emp.Id, emp.Name, emp.Salary);
             }
 
-            Console.WriteLine("-- array of employees AFTER sorting on NAME");
             Employee.SortOn = Employee.SortOnFields.Name;
+            Employee.SortOrder = Employee.SortOrders.Descending;
             arrEmployees.Sort();
+
+            Console.WriteLine("-- array of employees AFTER sorting on NAME");
             foreach (Employee emp in arrEmployees)
             {
                 Console.WriteLine("{0} {1, -20} {2,15:C}", emp.Id, emp.Name, emp.Salary);
