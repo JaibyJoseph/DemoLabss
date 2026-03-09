@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>JavaScript Promise Demo</title>
+
+	<style>
+		body{
+			font-family: Arial;
+			margin:40px;
+		}
+		#log{
+			margin-top:20px;
+			border:1px solid #ccc;
+			padding:15px;
+		}
+	</style>
+</head>
+
+<body>
+
+	<h2>JavaScript Promise Demonstration</h2>
+
+	<button onclick="runDemo()">Evaluate Student</button>
+
+	<div id="log"></div>
+
+    <script>
+
+        /**
+         * Utility function to log messages on screen
+         * @param {string} message
+         */
+        function log(message) {
+            const logDiv = document.getElementById("log");
+            const line = document.createElement("div");
+            line.textContent = message;
+            logDiv.appendChild(line);
+        }
+
+
+        /**
+         * Step 1: Validate marks
+         * @param {number} marks
+         * @returns {Promise<number>}
+         */
+        function validateMarks(marks) {
+            // NOTE: The second parameter while creating the Promise,
+            //	     receives the callback delegate to be invoked on failure in the call-chain step!
+            return new Promise((resolve, reject) => {
+
+                log("Validating marks...");
+
+                setTimeout(() => {
+
+                    if (marks < 0 || marks > 100) {
+                        reject("Invalid marks supplied.");
+                    }
+                    else {
+                        // passes the data "marks" to the next .then() in the promise chain
+                        resolve(marks);
+                    }
+
+                }, 1000);
+
+            });
+        }
+
+
+        /**
+         * Step 2: Calculate grade
+         * @param {number} marks
+         * @returns {Promise<string>}
+         *
+         * Also demonstrates how any step in the call-chain can exit!
+         */
+        function calculateGrade(marks) {
+            // NOTE: The second parameter while creating the Promise,
+            //	     receives the callback delegate to be invoked on failure in the call-chain step!
+            return new Promise((resolve, reject) => {
+
+                log("Calculating grade...");
+
+                setTimeout(() => {
+
+                    let grade;
+
+                    if (marks >= 80) {
+                        grade = "A";
+                    }
+                    else if (marks >= 60) {
+                        grade = "B";
+                    }
+                    else if (marks >= 40) {
+                        grade = "C";
+                    }
+                    else {
+                        grade = "F";
+
+                        // If desired, exit from the call chain!
+                        reject("Student has failed!  Cannot proceed further!");
+                        return;
+                    }
+
+                    // passes the data "grade" to the next .then() in the promise chain
+                    resolve(grade);
+
+                }, 1000);
+
+            });
+        }
+
+
+        /**
+         * Step 3: Save result (simulated database call)
+         * @param {string} grade
+         * @returns {Promise<string>}
+         */
+        function saveResult(grade) {
+            return new Promise((resolve) => {
+
+                log("Saving result to database...");
+
+                // throw new Error('simulated error');			// will invoke the CATCH block in the call-chain!
+
+                setTimeout(() => {
+                    // passes the data to the next .then() in the promise chain
+                    resolve("Result saved successfully. Grade = " + grade);
+                }, 1000);
+
+            });
+        }
+
+
+        /**
+         * Runs the Promise chain
+         */
+        function runDemo() {
+            document.getElementById("log").innerHTML = "";
+
+            const studentMarks = -72;
+
+            validateMarks(studentMarks)
+
+                .then((marks) => {
+                    log("Marks validated: " + marks);
+                    return calculateGrade(marks);
+                })
+
+                .then((grade) => {
+                    log("Grade calculated: " + grade);
+                    return saveResult(grade);
+                })
+
+                .then((resultMessage) => {
+
+                    // NOTE: This demonstrates an error occuring in the call-chain, and Promise executing the CATCH block!
+                    if (resultMessage === '') {
+                        throw new Error('Something went wrong');
+                    }
+                    log(resultMessage);
+                })
+
+                .catch((error) => {
+                    log("ERROR: " + error);
+                })
+
+                .finally(() => {
+                    log("Evaluation process completed.");
+                });
+        }
+
+    </script>
+
+</body>
+</html>
